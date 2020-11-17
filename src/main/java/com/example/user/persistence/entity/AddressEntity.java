@@ -4,6 +4,9 @@ import lombok.*;
 
 import javax.persistence.*;
 
+/**
+ * Entity object to perform DB operation on UserAddress table.
+ */
 @Entity
 @Table(name= "UserAddress")
 @Setter

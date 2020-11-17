@@ -5,6 +5,9 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 
+/**
+ * Model Object to capture User details.
+ */
 @Data
 @Builder
 public class User {

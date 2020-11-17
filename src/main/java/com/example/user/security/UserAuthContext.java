@@ -9,6 +9,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Custom implementation of UserDetails object which holds user authentication data.
+ * <br/>
+ * Authentication data includes username, password and roles.
+ */
 public class UserAuthContext implements UserDetails {
 
     private UserEntity userEntity;
@@ -17,6 +22,10 @@ public class UserAuthContext implements UserDetails {
         this.userEntity = userEntity;
     }
 
+    /**
+     * Sets user roles in list of <code>{@link GrantedAuthority}</code> class.
+     * @return
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
@@ -25,6 +34,11 @@ public class UserAuthContext implements UserDetails {
         return authorities;
     }
 
+    /**
+     * Returns password retrieved from database, which will be used by spring security implementation
+     * for doing the authentication check.
+     * @return
+     */
     @Override
     public String getPassword() {
         return userEntity.getBCryptedPassword();
@@ -32,6 +46,13 @@ public class UserAuthContext implements UserDetails {
        // return "test";
     }
 
+    /**
+     * Returns username retrieved from database, which will be used by spring security implementation
+     * for doing the authentication check.
+     * <br/>
+     * Userid from user details table is used as username.
+     * @return
+     */
     @Override
     public String getUsername() {
         return String.valueOf(userEntity.getUserId());

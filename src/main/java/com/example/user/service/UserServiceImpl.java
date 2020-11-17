@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+/**
+ * Service class provides business logic implementation for different user details Api operations.
+ */
 @Service
 @Slf4j
 public class UserServiceImpl implements UserService{
@@ -23,6 +26,14 @@ public class UserServiceImpl implements UserService{
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Retrieves all the users from database.
+     * <br/>
+     * Transforms DB entities to model objects.
+     * <br/>
+     * <code>{@link LogEntryExit}</code> annotation will ensure entry and exit logging of the method.
+     * @return
+     */
     @LogEntryExit
     @Override
     public List<User> fetchAllUsers() {
@@ -43,6 +54,16 @@ public class UserServiceImpl implements UserService{
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves  user from database using userId.
+     * <br/>
+     * Transforms DB entities to model objects.
+     * <br/>
+     * <code>{@link LogEntryExit}</code> annotation will ensure entry and exit logging of the method.
+     * <br/>
+     * Throws <code>{@link RecordNotFoundException}</code> exception if user is not found in database.
+     * @return
+     */
     @LogEntryExit
     @Override
     public User fetchUser(Long userId) {
@@ -62,6 +83,16 @@ public class UserServiceImpl implements UserService{
                 .orElseThrow(()-> new RecordNotFoundException("User not found."));
     }
 
+    /**
+     * Method saves new user information to database.
+     * <br/>
+     * Transforms DB entities to model objects.
+     * <br/>
+     * <code>{@link LogEntryExit}</code> annotation will ensure entry and exit logging of the method.
+     * <br/>
+     * Throws <code>{@link RecordNotFoundException}</code> exception if user is not found in database.
+     * @return
+     */
     @LogEntryExit
     @Override
     public User updateUser(Long userId, User user) {

@@ -16,6 +16,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.validation.ConstraintViolationException;
 
+/**
+ * Class provides API exception handling based on different exception types.
+ */
 @ControllerAdvice
 @Slf4j
 public class UserControllerAdvise extends ResponseEntityExceptionHandler {
