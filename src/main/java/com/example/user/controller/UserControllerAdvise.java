@@ -24,6 +24,7 @@ import javax.validation.ConstraintViolationException;
 public class UserControllerAdvise extends ResponseEntityExceptionHandler {
 
     public static final String VALIDATION_ERROR_INVALID_INPUT_PARAM_FORMAT = "VE51";
+    public static final String VALIDATION_ERROR_RECORD_NOT_FOUND = "VE52";
 
     @ExceptionHandler({ConstraintViolationException.class})
     @ResponseBody
@@ -66,7 +67,15 @@ public class UserControllerAdvise extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = { RecordNotFoundException.class })
     @ResponseBody
     protected ResponseEntity<Object> handleRecordNotFound(RuntimeException ex, WebRequest request) {
-        return handleExceptionInternal(ex, ex.getMessage(),
-                new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+        log.error("RecordNotFoundException : stack trace - {}", ex);
+        ErrorResponse error = ErrorResponse.builder()
+                .error(Error.builder()
+                        .code(VALIDATION_ERROR_RECORD_NOT_FOUND)
+                        .msg(ex.getMessage())
+                        .build())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        /*return handleExceptionInternal(ex, ex.getMessage(),
+                new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);*/
     }
 }
