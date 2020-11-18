@@ -4,7 +4,7 @@ API supports Get And Put endpoints to retrieve and update user details respectiv
 
 # Implementation Details –
 
-* Rest service is implemented using Spring Batch framework.
+* Rest service is implemented using Spring Boot framework.
 * Implemented using Java 13.
 * SLF4J is the logging framework.
 * In-memory H2 database
