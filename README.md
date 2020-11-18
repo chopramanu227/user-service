@@ -12,6 +12,7 @@ API supports Get And Put endpoints to retrieve and update user details respectiv
 * Application supports security feature build using Spring Security framework. 
 * Application is configured to be fault tolerant i.e. if there are any issue in DB connectivity, Hystrix fallback methods will be invoked to return default results.
 * Application uses Aspects for method start and end logging.
+* Spring PACT is used for Contract testing.
 
 ## Software
 
@@ -179,3 +180,6 @@ pom.xml file which includes all the dependencies required for the project.
    * Validation on input records can be extended to handle other failure scenarios.
    * Profiles can be added to handle different environment behaviours.
    * PACT tests can have more test cases. 
+
+## Postman Script Link
+https://www.getpostman.com/collections/5ca475d69388932e378b
