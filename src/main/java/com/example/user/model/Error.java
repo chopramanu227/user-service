@@ -3,6 +3,8 @@ package com.example.user.model;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * Model Object to encapsulate error details.
  */
@@ -11,4 +13,5 @@ import lombok.Data;
 public class Error {
     private String code;
     private String msg;
+    private List<String> errors;
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.List;
@@ -62,7 +63,7 @@ public class UserController {
     public User updateUser(@PathVariable
                            @Min(value = 1000, message = "User Id can't be less than 1000")
                            @Max(value = 99999, message = "User Id can't be greter than 99999") Long id,
-                           @RequestBody User user) {
+                           @RequestBody @Valid  User user) {
         return userService.updateUser(id, user);
     }
 }
