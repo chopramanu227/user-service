@@ -4,6 +4,7 @@ import com.example.user.exception.RecordNotFoundException;
 import com.example.user.model.User;
 import com.example.user.persistence.entity.AddressEntity;
 import com.example.user.persistence.entity.UserEntity;
+import com.example.user.persistence.repository.UserDAO;
 import com.example.user.persistence.repository.UserRepository;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
@@ -29,13 +30,13 @@ public class UserServiceImplTest {
    private UserServiceImpl userService;
 
     @Mock
-    private UserRepository userRepository;
+    private UserDAO userDAO;
 
     @Test
     public void whenFetchAllUsers_AndUsersPresentInDb_ThenUserListReturned() {
         List<UserEntity> userEntities= new ArrayList<>();
         userEntities.add(mockUserEntity(Long.valueOf("1001")));
-        Mockito.when(userRepository.findAll())
+        Mockito.when(userDAO.fetchAllUsers())
                 .thenReturn(userEntities);
         List<User> users= userService.fetchAllUsers();
         Assert.assertFalse(users.isEmpty());
@@ -44,7 +45,7 @@ public class UserServiceImplTest {
 
     @Test
     public void whenFetchAllUsers_AndUsersNotPresentInDb_ThenEmptyUserListReturned() {
-        Mockito.when(userRepository.findAll())
+        Mockito.when(userDAO.fetchAllUsers())
                 .thenReturn(Collections.emptyList());
         List<User> users= userService.fetchAllUsers();
         Assert.assertTrue(users.isEmpty());
@@ -54,7 +55,7 @@ public class UserServiceImplTest {
     @Test
     public void whenFetchUser_AndUserPresentInDb_ThenUserIsReturned() {
         Long userId= Long.valueOf("1001");
-        Mockito.when(userRepository.findById(userId))
+        Mockito.when(userDAO.fetchUserByIdWithFallback(userId))
                 .thenReturn(Optional.of(mockUserEntity(userId)));
         User user= userService.fetchUser(userId);
         Assert.assertNotNull(user);
@@ -64,7 +65,7 @@ public class UserServiceImplTest {
     @Test
     public void whenFetchUser_AndUserNotPresentInDb_ThenRecordNotFoundException() {
         Long userId= Long.valueOf("1001");
-        Mockito.when(userRepository.findById(userId))
+        Mockito.when(userDAO.fetchUserByIdWithFallback(userId))
                 .thenReturn(Optional.empty());
         Assertions.assertThrows(RecordNotFoundException.class,() -> userService.fetchUser(userId));
     }
@@ -72,7 +73,7 @@ public class UserServiceImplTest {
     @Test
     public void whenUpdateUser_AndUserNotPresentInDb_ThenRecordNotFoundException() {
         Long userId= Long.valueOf("1001");
-        Mockito.when(userRepository.findById(userId))
+        Mockito.when(userDAO.fetchUserById(userId))
                 .thenReturn(Optional.empty());
         Assertions.assertThrows(RecordNotFoundException.class,() -> userService.updateUser(userId,Mockito.mock(User.class)));
     }
@@ -85,9 +86,9 @@ public class UserServiceImplTest {
         UserEntity newUserEntity = UserEntity.builder()
                 .firstName("newFname")
                 .build();
-        Mockito.when(userRepository.findById(userId))
+        Mockito.when(userDAO.fetchUserById(userId))
                 .thenReturn(Optional.of(savedUserEntity));
-        Mockito.when(userRepository.save(Mockito.any(UserEntity.class)))
+        Mockito.when(userDAO.updateUser(Mockito.any(UserEntity.class)))
                 .thenReturn(newUserEntity);
         User user=userService.updateUser(userId,User.builder()
                 .firstName("newFname")

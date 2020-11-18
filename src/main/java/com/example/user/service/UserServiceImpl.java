@@ -7,11 +7,12 @@ import com.example.user.model.Address;
 import com.example.user.model.User;
 import com.example.user.persistence.entity.AddressEntity;
 import com.example.user.persistence.entity.UserEntity;
-import com.example.user.persistence.repository.UserRepository;
+import com.example.user.persistence.repository.UserDAO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -24,7 +25,7 @@ import java.util.stream.StreamSupport;
 public class UserServiceImpl implements UserService{
 
     @Autowired
-    private UserRepository userRepository;
+    private UserDAO userDAO;
 
     /**
      * Retrieves all the users from database.
@@ -38,7 +39,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public List<User> fetchAllUsers() {
         return StreamSupport
-                .stream(userRepository.findAll().spliterator(), false)
+                .stream(userDAO.fetchAllUsers().spliterator(), false)
                 .map(userEntity -> User.builder()
                         .title(userEntity.getTitle())
                         .firstName(userEntity.getFirstName())
@@ -67,7 +68,7 @@ public class UserServiceImpl implements UserService{
     @LogEntryExit
     @Override
     public User fetchUser(Long userId) {
-        return userRepository.findById(userId)
+        return userDAO.fetchUserByIdWithFallback(userId)
                 .map(userEntity -> User.builder()
                         .title(userEntity.getTitle())
                         .firstName(userEntity.getFirstName())
@@ -95,16 +96,17 @@ public class UserServiceImpl implements UserService{
      */
     @LogEntryExit
     @Override
+    @Transactional
     public User updateUser(Long userId, User user) {
         if (user == null) {
             throw new EmptyPayloadException("Update request triggered with empty payload.");
         }
-        UserEntity userEntity = userRepository.findById(userId)
+        UserEntity userEntity = userDAO.fetchUserById(userId)
                 .orElseThrow(() -> new RecordNotFoundException("User not found."));
         // update existing user entity with new user details
         populateUserDetails(user, userEntity);
         //save data to db
-        UserEntity updateUserEntity = userRepository.save(userEntity);
+        UserEntity updateUserEntity = userDAO.updateUser(userEntity);
         //transform entity to domain object.
         User.UserBuilder userBuilder = User.builder()
                 .title(updateUserEntity.getTitle())
